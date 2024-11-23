@@ -83,5 +83,16 @@ sudo systemctl start hostapd
 sudo systemctl start dnsmasq
 sudo systemctl start scoreboard
 
+# Update dnsmasq configuration
+sudo tee /etc/dnsmasq.conf << EOF
+interface=wlan0
+dhcp-range=192.168.4.2,192.168.4.20,255.255.255.0,24h
+domain=local
+address=/scoreboard/192.168.4.1
+EOF
+
+# Restart dnsmasq
+sudo systemctl restart dnsmasq
+
 echo "Installation complete!"
 echo "Check status with: sudo systemctl status scoreboard"
