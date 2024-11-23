@@ -1,0 +1,157 @@
+scoreboard/
+├── main.py                    # Application entry point
+│   └── initialize system, start web server
+│
+├── modules/
+│   ├── display.py            # LED Matrix Control
+│   │   ├── class ScoreBoard
+│   │   ├── class LargeDigits
+│   │   └── display rendering functions
+│   │
+│   ├── power.py             # Power Management
+│   │   ├── class PowerManager
+│   │   ├── class PowerMonitor (ADC)
+│   │   └── power status functions
+│   │
+│   ├── system_status.py     # System Monitoring
+│   │   ├── class SystemInfo
+│   │   ├── temperature monitoring
+│   │   └── resource usage tracking
+│   │
+│   └── webserver.py         # Web Interface
+│       ├── Flask app setup
+│       ├── API routes
+│       └── WebSocket handlers
+│
+├── config/
+│   ├── settings.py          # Configuration Constants
+│   │   ├── Display settings
+│   │   ├── Network settings
+│   │   └── System thresholds
+│   │
+│   └── wifi_config.py       # WiFi Access Point Setup
+│
+├── templates/
+│   ├── index.html           # Main Control Interface
+│   └── diagnostics.html     # System Status Page
+│
+└── scripts/
+    ├── install.sh           # Installation Script
+    └── start.sh            # Startup Script
+
+Key Code Components:
+
+1. ScoreBoard Class (display.py):
+```python
+class ScoreBoard:
+    def __init__(self):
+        self.matrix = self.setup_matrix()
+        self.scores = {"home": 0, "away": 0}
+        self.game_time = 0
+        self.display_mode = 'timer'
+        self.brightness = 100
+        self.colors = {
+            'home': (0, 255, 0),
+            'away': (0, 255, 0),
+            'timer': (255, 255, 0),
+            'text': (0, 255, 255)
+        }
+```
+
+2. Power Management (power.py):
+```python
+class PowerManager:
+    def __init__(self):
+        self.pijuice = PiJuice(1, 0x14)
+        self.adc = self.setup_adc()
+        self.power_sources = {
+            'mains': False,
+            'battery': False
+        }
+```
+
+3. System Status (system_status.py):
+```python
+class SystemInfo:
+    def __init__(self):
+        self.start_time = datetime.now()
+        self.power_manager = PowerManager()
+        self.temperature_sensors = self.setup_sensors()
+```
+
+4. Flask Routes (webserver.py):
+```python
+@app.route('/api/status')
+def get_status():
+    return jsonify({
+        'scores': scoreboard.scores,
+        'game_time': scoreboard.game_time,
+        'power': power_manager.get_status(),
+        'system': system_info.get_status()
+    })
+
+@app.route('/api/score', methods=['POST'])
+def update_score():
+    data = request.get_json()
+    scoreboard.set_score(data['team'], data['value'])
+    return jsonify({"status": "success"})
+```
+
+5. Configuration (settings.py):
+```python
+DISPLAY_CONFIG = {
+    'rows': 32,
+    'cols': 64,
+    'chain_length': 4,
+    'parallel': 1,
+    'hardware_mapping': 'adafruit-hat'
+}
+
+NETWORK_CONFIG = {
+    'ssid': 'Hockey-Scoreboard',
+    'port': 80,
+    'host': '0.0.0.0'
+}
+
+SYSTEM_THRESHOLDS = {
+    'temperature_warning': 70,
+    'low_battery': 20,
+    'low_voltage': 4.7
+}
+```
+
+6. Install Script (install.sh):
+```bash
+#!/bin/bash
+# System dependencies
+apt-get update
+apt-get install -y python3-pip python3-venv
+
+# Python virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+# Python dependencies
+pip install -r requirements.txt
+
+# Service setup
+cp scripts/scoreboard.service /etc/systemd/system/
+systemctl enable scoreboard
+systemctl start scoreboard
+```
+
+Key Features Implemented:
+1. Score Display
+2. Timer Management
+3. Message Display
+4. Power Monitoring
+5. System Status
+6. WiFi Configuration
+7. Web Interface
+8. Installation Process
+
+Would you like me to detail:
+1. Any specific component?
+2. Additional features?
+3. Testing procedures?
+4. Deployment steps?

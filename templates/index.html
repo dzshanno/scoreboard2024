@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hockey Scoreboard Control</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-4">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold">Hockey Scoreboard Control</h1>
+            <!-- Display Power Control -->
+            <div class="flex items-center">
+                <button id="displayPowerBtn" 
+                        onclick="toggleDisplay()" 
+                        class="w-32 px-4 py-2 rounded font-semibold bg-green-500 text-white">
+                    ON
+                </button>
+                <span id="displayStatus" class="ml-4 text-sm text-green-500">Display Active</span>
+            </div>
+        </div>
+
+        <!-- Main Controls Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Score Controls -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-lg font-semibold mb-4">Score</h2>
+                <div class="grid grid-cols-2 gap-8">
+                    <!-- Home Team -->
+                    <div>
+                        <h3 class="text-md font-medium mb-2">Home</h3>
+                        <div class="flex items-center justify-between">
+                            <button onclick="updateScore('home', -1)" 
+                                    class="bg-red-500 text-white px-6 py-3 rounded text-xl">
+                                -
+                            </button>
+                            <span id="homeScore" class="text-4xl font-bold">0</span>
+                            <button onclick="updateScore('home', 1)" 
+                                    class="bg-green-500 text-white px-6 py-3 rounded text-xl">
+                                +
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Away Team -->
+                    <div>
+                        <h3 class="text-md font-medium mb-2">Away</h3>
+                        <div class="flex items-center justify-between">
+                            <button onclick="updateScore('away', -1)" 
+                                    class="bg-red-500 text-white px-6 py-3 rounded text-xl">
+                                -
+                            </button>
+                            <span id="awayScore" class="text-4xl font-bold">0</span>
+                            <button onclick="updateScore('away', 1)" 
+                                    class="bg-green-500 text-white px-6 py-3 rounded text-xl">
+                                +
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timer Control -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-lg font-semibold mb-4">Game Timer</h2>
+                <div class="space-y-4">
+                    <!-- Timer Display -->
+                    <div class="text-center">
+                        <span id="timerDisplay" class="text-5xl font-bold">35:00</span>
+                    </div>
+                    <!-- Timer Controls -->
+                    <div class="flex justify-center space-x-4">
+                        <button onclick="startTimer()" 
+                                id="startTimerBtn"
+                                class="bg-green-500 text-white px-6 py-3 rounded">
+                            Start
+                        </button>
+                        <button onclick="stopTimer()" 
+                                id="stopTimerBtn"
+                                class="bg-red-500 text-white px-6 py-3 rounded">
+                            Stop
+                        </button>
+                        <button onclick="resetTimer()" 
+                                class="bg-gray-500 text-white px-6 py-3 rounded">
+                            Reset
+                        </button>
+                    </div>
+                    <!-- Timer Set -->
+                    <div class="flex items-center justify-center space-x-2">
+                        <input type="number" 
+                               id="timerInput" 
+                               class="border rounded p-2 w-20 text-center" 
+                               value="35">
+                        <button onclick="setTimer()" 
+                                class="bg-blue-500 text-white px-4 py-2 rounded">
+                            Set
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Message Controls -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-lg font-semibold mb-4">Display Text</h2>
+                <!-- Display Mode Selection -->
+                <div class="mb-4">
+                    <div class="flex space-x-4">
+                        <button id="timerModeBtn" 
+                                onclick="setDisplayMode('timer')" 
+                                class="px-4 py-2 rounded bg-blue-500 text-white">
+                            Show Timer
+                        </button>
+                        <button id="textModeBtn" 
+                                onclick="setDisplayMode('text')" 
+                                class="px-4 py-2 rounded bg-gray-200">
+                            Show Text
+                        </button>
+                        <button id="timeModeBtn" 
+                                onclick="setDisplayMode('time')" 
+                                class="px-4 py-2 rounded bg-gray-200">
+                            Show Time
+                        </button>
+                    </div>
+                </div>
+                <!-- Preset Messages -->
+                <div class="mb-4">
+                    <select id="presetSelect" 
+                            class="w-full border rounded p-2 mb-2">
+                        <option value="">Select a preset message...</option>
+                    </select>
+                    <div class="flex space-x-2">
+                        <button onclick="displaySelected()" 
+                                class="bg-blue-500 text-white px-4 py-2 rounded">
+                            Display Selected
+                        </button>
+                        <button onclick="clearMessage()" 
+                                class="bg-gray-500 text-white px-4 py-2 rounded">
+                            Clear
+                        </button>
+                    </div>
+                </div>
+                <!-- Custom Message -->
+                <div>
+                    <input type="text" 
+                           id="customMessage" 
+                           class="w-full border rounded p-2 mb-2" 
+                           placeholder="Enter custom message...">
+                    <button onclick="displayCustom()" 
+                            class="bg-green-500 text-white px-4 py-2 rounded">
+                        Display Custom
+                    </button>
+                </div>
+            </div>
+
+            <!-- System Status -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-lg font-semibold mb-4">System Status</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Power Status -->
+                    <div>
+                        <h3 class="font-medium mb-2">Power</h3>
+                        <div class="space-y-1">
+                            <p>Battery: <span id="batteryLevel">--</span>%</p>
+                            <p>Panel Voltage: <span id="panelVoltage">--</span>V</p>
+                        </div>
+                    </div>
+                    <!-- Temperature -->
+                    <div>
+                        <h3 class="font-medium mb-2">Temperature</h3>
+                        <div class="space-y-1">
+                            <p>System: <span id="systemTemp">--</span>°C</p>
+                            <p>Panels: <span id="panelTemp">--</span>°C</p>
+                        </div>
+                    </div>
+                    <!-- Network Status -->
+                    <div>
+                        <h3 class="font-medium mb-2">Network</h3>
+                        <div class="space-y-1">
+                            <p>WiFi: <span id="wifiStatus">--</span></p>
+                            <p>Clients: <span id="clientCount">--</span></p>
+                        </div>
+                    </div>
+                    <!-- Display Status -->
+                    <div>
+                        <h3 class="font-medium mb-2">Display</h3>
+                        <div class="space-y-1">
+                            <p>Mode: <span id="displayMode">--</span></p>
+                            <p>Brightness: <span id="brightnessLevel">--</span>%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

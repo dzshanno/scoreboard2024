@@ -1,0 +1,13 @@
+
+# File: requirements.txt
+
+flask==2.0.1
+rpi-rgb-led-matrix==0.0.1
+pillow==8.3.1
+adafruit-circuitpython-ads1x15==2.2.12
+psutil==5.8.0
+pijuice==1.8
+netifaces==0.11.0
+requests==2.26.0
+werkzeug==2.0.1
+python-dateutil==2.8.2
